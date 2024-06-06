@@ -1,0 +1,30 @@
+server:
+  port: 8090
+  ssl:
+    enabled: true
+    key-store: classpath:ssl/api.familystudy.cn.jks
+    key-store-password: 40x8c4pa
+    key-store-type: JKS
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    dynamic:
+      primary: master
+      strict: false
+      datasource:
+        master:
+          url: jdbc:mysql://47.120.38.169:3306/campus_safety?serverTimezone=GMT%2b8
+          username: root
+          password: hxy123456
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+files:
+  upload:
+    path: /www/imagehost/file/
