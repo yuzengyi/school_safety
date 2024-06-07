@@ -15,10 +15,8 @@ import io.swagger.models.auth.In;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+
 @CrossOrigin
 @RestController
 @RequestMapping("/dangerSituation")
@@ -49,6 +47,13 @@ public class DangerSituationController {
         queryWrapper.like("create_time", dateFormat.format(cal.getTime()));
         return Result.success(dangerSituationService.count(queryWrapper));
     }
+
+    @GetMapping("/count/{alarmId}")
+    public Result getCount(@PathVariable Integer alarmId) {
+           List<Map<String, Object>> res = dangerSituationService.getSchoolCount();
+           return Result.success(res);
+    }
+
     @GetMapping
     public Result findAll() {
         return Result.success(dangerSituationService.list());

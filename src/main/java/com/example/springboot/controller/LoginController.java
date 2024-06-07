@@ -1,5 +1,6 @@
 package com.example.springboot.controller;
 //yzy
+
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.springboot.common.Constants;
@@ -14,11 +15,14 @@ import com.example.springboot.exception.ServiceException;
 import com.example.springboot.service.impl.GovernmentClientServiceImpl;
 import com.example.springboot.service.impl.SaftyStaffServiceImpl;
 import com.example.springboot.service.impl.SchoolClientServiceImpl;
+import com.example.springboot.utils.SHA256Util;
 import com.example.springboot.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.Objects;
+
+import static com.example.springboot.utils.SHA256Util.encryptPassword;
 
 @RestController
 @CrossOrigin
@@ -34,9 +38,10 @@ public class LoginController {
     @PostMapping("/register/{role}")
     public Result register(@PathVariable Integer role, @RequestBody LoginDto registerDto) {
         if (Objects.equals(registerDto.getUsername(), "") ||
-                Objects.equals(registerDto.getPassword(), ""))
-        {throw new ServiceException(Constants.CODE_400, "用户名或密码为空");}
-        if(role == 1) {
+                Objects.equals(registerDto.getPassword(), "")) {
+            throw new ServiceException(Constants.CODE_400, "用户名或密码为空");
+        }
+        if (role == 1) {
 
             SchoolClient schoolClient = new SchoolClient();
             if (null != schoolClientService.getOne(
@@ -46,10 +51,11 @@ public class LoginController {
                 throw new ServiceException(Constants.CODE_400, "已存在该用户");
             }
             schoolClient.setClientNumber(registerDto.getUsername());
-            schoolClient.setPassword(registerDto.getPassword());
+            // 存入加密的密码
+            schoolClient.setPassword(SHA256Util.encryptPassword(registerDto.getPassword()));
             schoolClientService.save(schoolClient);
             return Result.success();
-        } else if(role == 2) {
+        } else if (role == 2) {
             GovernmentClient governmentClient = new GovernmentClient();
             if (null != governmentClientService.getOne(
                     new QueryWrapper<GovernmentClient>()
@@ -58,7 +64,8 @@ public class LoginController {
                 throw new ServiceException(Constants.CODE_400, "已存在该用户");
             }
             governmentClient.setClientNumber(registerDto.getUsername());
-            governmentClient.setPassword(registerDto.getPassword());
+            // 存入加密的密码
+            governmentClient.setPassword(SHA256Util.encryptPassword(registerDto.getPassword()));
             governmentClientService.save(governmentClient);
             return Result.success();
         } else if (role == 3) {
@@ -70,7 +77,8 @@ public class LoginController {
                 throw new ServiceException(Constants.CODE_400, "已存在该用户");
             }
             saftyStaff.setUsername(registerDto.getUsername());
-            saftyStaff.setPassword(registerDto.getPassword());
+            // 存入加密的密码
+            saftyStaff.setPassword(SHA256Util.encryptPassword(registerDto.getPassword()));
             saftyStaffService.save(saftyStaff);
             return Result.success();
         } else {
@@ -79,15 +87,13 @@ public class LoginController {
     }
 
 
-//    @GetMapping("/username/{username}")
-
     @PostMapping("/password/{role}")
     public Result changePwd(@PathVariable Integer role, @RequestBody UserPasswordDto userPasswordDto) {
         if (role == 1) {
             SchoolClient client = schoolClientService.getOne(
                     new QueryWrapper<SchoolClient>()
                             .eq("client_number", userPasswordDto.getUsername())
-                            .eq("password", userPasswordDto.getPassword())
+                            .eq("password", SHA256Util.encryptPassword(userPasswordDto.getPassword()))
             );
             if (null != client) {
                 client.setPassword(userPasswordDto.getNewPassword());
@@ -101,10 +107,10 @@ public class LoginController {
             GovernmentClient client = governmentClientService.getOne(
                     new QueryWrapper<GovernmentClient>()
                             .eq("client_number", userPasswordDto.getUsername())
-                            .eq("password", userPasswordDto.getPassword())
+                            .eq("password", SHA256Util.encryptPassword(userPasswordDto.getPassword()))
             );
             if (null != client) {
-                client.setPassword(userPasswordDto.getNewPassword());
+                client.setPassword(SHA256Util.encryptPassword(userPasswordDto.getNewPassword()));
                 governmentClientService.update(client, new QueryWrapper<GovernmentClient>()
                         .eq("client_number", userPasswordDto.getUsername()));
                 return Result.success();
@@ -115,10 +121,10 @@ public class LoginController {
             SaftyStaff client = saftyStaffService.getOne(
                     new QueryWrapper<SaftyStaff>()
                             .eq("username", userPasswordDto.getUsername())
-                            .eq("password", userPasswordDto.getPassword())
+                            .eq("password", SHA256Util.encryptPassword(userPasswordDto.getPassword()))
             );
             if (null != client) {
-                client.setPassword(userPasswordDto.getNewPassword());
+                client.setPassword(SHA256Util.encryptPassword(userPasswordDto.getNewPassword()));
                 saftyStaffService.update(client, new QueryWrapper<SaftyStaff>()
                         .eq("username", userPasswordDto.getUsername()));
                 return Result.success();
@@ -137,12 +143,12 @@ public class LoginController {
             SchoolClient client = schoolClientService.getOne(
                     new QueryWrapper<SchoolClient>()
                             .eq("client_number", loginDto.getUsername())
-                            .eq("password", loginDto.getPassword())
+                            .eq("password", SHA256Util.encryptPassword(loginDto.getPassword()))
             );
             if (null != client) {
                 BeanUtil.copyProperties(client, userDto, true);
                 userDto.setUsername(client.getClientNumber());
-                String token = TokenUtils.genToken(client.getId().toString(), client.getPassword());
+                String token = TokenUtils.genToken(client.getId().toString(), SHA256Util.encryptPassword(client.getPassword()));
                 userDto.setToken(token);
                 return Result.success(userDto);
             } else {
@@ -152,12 +158,12 @@ public class LoginController {
             GovernmentClient client = governmentClientService.getOne(
                     new QueryWrapper<GovernmentClient>()
                             .eq("client_number", loginDto.getUsername())
-                            .eq("password", loginDto.getPassword())
+                            .eq("password", SHA256Util.encryptPassword(loginDto.getPassword()))
             );
             if (null != client) {
                 BeanUtil.copyProperties(client, userDto, true);
                 userDto.setUsername(client.getClientNumber());
-                String token = TokenUtils.genToken(client.getId().toString(), client.getPassword());
+                String token = TokenUtils.genToken(client.getId().toString(), SHA256Util.encryptPassword(client.getPassword()));
                 userDto.setToken(token);
                 return Result.success(userDto);
             } else {
@@ -167,12 +173,12 @@ public class LoginController {
             SaftyStaff client = saftyStaffService.getOne(
                     new QueryWrapper<SaftyStaff>()
                             .eq("username", loginDto.getUsername())
-                            .eq("password", loginDto.getPassword())
+                            .eq("password", SHA256Util.encryptPassword(loginDto.getPassword()))
             );
             if (null != client) {
                 BeanUtil.copyProperties(client, userDto, true);
 
-                String token = TokenUtils.genToken(client.getId().toString(), client.getPassword());
+                String token = TokenUtils.genToken(client.getId().toString(), SHA256Util.encryptPassword(client.getPassword()));
                 userDto.setToken(token);
                 return Result.success(userDto);
             } else {
