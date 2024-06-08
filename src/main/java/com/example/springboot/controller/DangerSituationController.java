@@ -48,12 +48,31 @@ public class DangerSituationController {
         return Result.success(dangerSituationService.count(queryWrapper));
     }
 
-    @GetMapping("/count/{alarmId}")
-    public Result getCount(@PathVariable Integer alarmId) {
+    @GetMapping("/count")
+    public Result getaddressCount() {
            List<Map<String, Object>> res = dangerSituationService.getSchoolCount();
            return Result.success(res);
     }
-
+    @GetMapping("/address")
+    public Result getCount() {
+        List<Map<String, Object>> res = dangerSituationService.getAddressCount();
+        return Result.success(res);
+    }
+    @GetMapping("/time")
+    public Result gettimeCount() {
+        List<Map<String, Object>> res = dangerSituationService.getTimeCount();
+        return Result.success(res);
+    }
+    @GetMapping("/month")
+    public Result getMonthlyData() {
+        List<Map<String, Object>> res = dangerSituationService.getMonthlyData();
+        return Result.success(res);
+    }
+    @GetMapping("/week")
+    public Result getWeeklyAlarmCount() {
+        List<Map<String, Object>> res = dangerSituationService.getWeeklyAlarmCount();
+        return Result.success(res);
+    }
     @GetMapping
     public Result findAll() {
         return Result.success(dangerSituationService.list());
@@ -202,6 +221,7 @@ public class DangerSituationController {
         }
         return Result.success(dangerSituationService.page(new Page<>(pageNum, pageSize),queryWrapper));
     }
+
     @PostMapping("/solve/{dangerId}")
     public Result solveById(@PathVariable Integer dangerId,
                             @RequestBody Map<String, String> map) {
