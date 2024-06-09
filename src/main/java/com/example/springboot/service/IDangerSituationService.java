@@ -9,9 +9,9 @@ import java.util.Map;
 
 public interface IDangerSituationService extends IService<DangerSituation> {
     List<Map<String, Object>> getSchoolCount();
-    List<Map<String, Object>> getAddressCount();
-    List<Map<String, Object>> getTimeCount();
-    List<Map<String, Object>> getMonthlyData();
-    List<Map<String, Object>> getWeeklyAlarmCount();
+    List<Map<String, Object>> getAddressCount(Integer alarmId);
+    List<Map<String, Object>> getTimeCount(Integer alarmId);
+    List<Map<String, Object>> getMonthlyData(Integer alarmId);
+    List<Map<String, Object>> getWeeklyAlarmCount(Integer alarmId);
 
 }

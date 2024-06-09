@@ -53,24 +53,24 @@ public class DangerSituationController {
            List<Map<String, Object>> res = dangerSituationService.getSchoolCount();
            return Result.success(res);
     }
-    @GetMapping("/address")
-    public Result getCount() {
-        List<Map<String, Object>> res = dangerSituationService.getAddressCount();
+    @GetMapping("/address/{alarmId}")
+    public Result getCount(@PathVariable Integer alarmId) {
+        List<Map<String, Object>> res = dangerSituationService.getAddressCount(alarmId);
         return Result.success(res);
     }
-    @GetMapping("/time")
-    public Result gettimeCount() {
-        List<Map<String, Object>> res = dangerSituationService.getTimeCount();
+    @GetMapping("/time/{alarmId}")
+    public Result gettimeCount(@PathVariable Integer alarmId) {
+        List<Map<String, Object>> res = dangerSituationService.getTimeCount(alarmId);
         return Result.success(res);
     }
-    @GetMapping("/month")
-    public Result getMonthlyData() {
-        List<Map<String, Object>> res = dangerSituationService.getMonthlyData();
+    @GetMapping("/month/{alarmId}")
+    public Result getMonthlyData(@PathVariable Integer alarmId) {
+        List<Map<String, Object>> res = dangerSituationService.getMonthlyData(alarmId);
         return Result.success(res);
     }
-    @GetMapping("/week")
-    public Result getWeeklyAlarmCount() {
-        List<Map<String, Object>> res = dangerSituationService.getWeeklyAlarmCount();
+    @GetMapping("/week/{alarmId}")
+    public Result getWeeklyAlarmCount(@PathVariable Integer alarmId) {
+        List<Map<String, Object>> res = dangerSituationService.getWeeklyAlarmCount(alarmId);
         return Result.success(res);
     }
     @GetMapping

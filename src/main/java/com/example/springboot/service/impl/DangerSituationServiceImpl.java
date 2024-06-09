@@ -22,15 +22,15 @@ public class DangerSituationServiceImpl extends ServiceImpl<DangerSituationMappe
     public List<Map<String, Object>> getSchoolCount() {
         return dangerSituationMapper.getSchoolCount();
     }
-    public List<Map<String, Object>> getAddressCount() {
-        return dangerSituationMapper.getAddressCount();
+    public List<Map<String, Object>> getAddressCount(Integer alarmId) {
+        return dangerSituationMapper.getAddressCount(alarmId);
     }
-    public List<Map<String, Object>> getTimeCount() {
-        return dangerSituationMapper.getTimeCount();
+    public List<Map<String, Object>> getTimeCount(Integer alarmId) {
+        return dangerSituationMapper.getTimeCount(alarmId);
     }
     @Override
-    public List<Map<String, Object>> getMonthlyData() {
-        List<Map<String, Object>> monthlyCounts = dangerSituationMapper.getMonthlyCount();
+    public List<Map<String, Object>> getMonthlyData(Integer alarmId) {
+        List<Map<String, Object>> monthlyCounts = dangerSituationMapper.getMonthlyCount(alarmId);
         List<Map<String, Object>> result = new ArrayList<>();
 
         int[] data = new int[12];
@@ -50,7 +50,7 @@ public class DangerSituationServiceImpl extends ServiceImpl<DangerSituationMappe
         return result;
     }
     @Override
-    public List<Map<String, Object>> getWeeklyAlarmCount() {
-        return dangerSituationMapper.getWeeklyAlarmCount();
+    public List<Map<String, Object>> getWeeklyAlarmCount(Integer alarmId) {
+        return dangerSituationMapper.getWeeklyAlarmCountByAlarmId(alarmId);
     }
 }
